@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "Web QC Assistant",
+  "version": "1.0",
+  "description": "A tool for QC on websites with a convenient bottom drawer.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "sidePanel",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://api.deepseek.com/*",
+    "https://api.openai.com/*",
+    "http://*/*",
+    "https://*/*"
+  ],
+  "action": {
+    "default_title": "Open QC Panel"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["drawer.html", "html2canvas.min.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
