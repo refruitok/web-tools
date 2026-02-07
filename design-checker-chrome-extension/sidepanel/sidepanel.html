@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tiny Inspector</title>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>🔍 Tiny Inspector</h1>
+      <p class="subtitle">Interactive Element Checker</p>
+    </header>
+
+    <div class="mode-selector">
+      <button id="inspectBtn" class="btn btn-mode">
+        <span class="btn-icon">🖱️</span>
+        Inspect Element
+      </button>
+      <button id="distanceBtn" class="btn btn-mode">
+        <span class="btn-icon">📏</span>
+        Measure Distance
+      </button>
+    </div>
+
+    <div id="activeInfo" class="active-info" style="display: none;">
+      <p id="modeStatus">Click an element on the page</p>
+      <button id="cancelBtn" class="btn-small">Cancel</button>
+    </div>
+
+    <div id="inspectorResults" class="inspector-results">
+      <div class="meta-section">
+        <details id="acc_meta" class="accordion-trigger">
+          <summary>📄 Page Meta Info</summary>
+          <div id="metaDetails" class="meta-details">
+            <p class="loading-text">Loading meta info...</p>
+          </div>
+        </details>
+      </div>
+
+      <div id="dynamicContent">
+        <div class="empty-state">
+          <div class="empty-icon">🖱️</div>
+          <p><strong>Click "Inspect Element"</strong></p>
+          <p>Then hover over and click any element on the page to see its detailed properties.</p>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <button id="clearHighlights" class="btn btn-secondary">Clear All</button>
+    </footer>
+  </div>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>

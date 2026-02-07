@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Website QC Checker</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>🔍 QC Checker</h1>
+      <p class="subtitle">Website Element Inspector</p>
+    </header>
+
+    <div class="controls">
+      <button id="runAllChecks" class="btn btn-primary">
+        <span class="btn-icon">▶</span>
+        Run All Checks
+      </button>
+    </div>
+
+    <div class="check-options">
+      <h2>Select Checks</h2>
+      <label class="checkbox-item">
+        <input type="checkbox" id="checkHeaders" checked>
+        <span class="checkmark"></span>
+        <span class="label-text">Header Tags (H1-H6)</span>
+      </label>
+      <label class="checkbox-item">
+        <input type="checkbox" id="checkFonts" checked>
+        <span class="checkmark"></span>
+        <span class="label-text">Font Size & Color</span>
+      </label>
+      <label class="checkbox-item">
+        <input type="checkbox" id="checkImages" checked>
+        <span class="checkmark"></span>
+        <span class="label-text">Image Dimensions</span>
+      </label>
+      <label class="checkbox-item">
+        <input type="checkbox" id="checkSpacing" checked>
+        <span class="checkmark"></span>
+        <span class="label-text">Element Spacing</span>
+      </label>
+      <label class="checkbox-item">
+        <input type="checkbox" id="checkMeta" checked>
+        <span class="checkmark"></span>
+        <span class="label-text">Meta & Description</span>
+      </label>
+    </div>
+
+    <div class="results-container">
+      <h2>Results</h2>
+      <div id="results" class="results">
+        <p class="placeholder">Click "Run All Checks" to analyze the page</p>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="exportResults" class="btn btn-secondary" disabled>
+        <span class="btn-icon">📋</span>
+        Export Report
+      </button>
+      <button id="clearHighlights" class="btn btn-secondary">
+        <span class="btn-icon">✖</span>
+        Clear Highlights
+      </button>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -4,6 +4,13 @@ const injectedTabs = new Set();
 
 async function ensureContentScriptInjected(tabId) {
   if (injectedTabs.has(tabId)) return true;
+  // Skip chrome:// and other restricted URLs silently
+  try {
+    const tab = await chrome.tabs.get(tabId);
+    if (!tab.url || tab.url.startsWith('chrome://') || tab.url.startsWith('chrome-extension://') || tab.url.startsWith('about:')) {
+      return false;
+    }
+  } catch (e) { return false; }
   try {
     // Check if content script is already present (e.g. from a previous panel session)
     const response = await chrome.tabs.sendMessage(tabId, { action: "getPageMetadata" }).catch(() => null);
@@ -1171,6 +1178,9 @@ chrome.storage.local.get(['deepseekApiKey', 'openaiApiKey', 'aiProvider', 'inspe
     updateWpUI(result.wpUser, result.wpUrl);
     // Verify token is still valid
     checkWpAuth(result.wpUrl, result.wpToken);
+  } else {
+    // Not logged in — restrict QC tab
+    updateQcTabAccess(null);
   }
 
   if (result.deepseekApiKey) {
@@ -1569,6 +1579,33 @@ document.getElementById('mobile-device-select').addEventListener('change', async
 
 // ============ WORDPRESS AUTH ============
 
+function updateQcTabAccess(user) {
+  const checkerBtn = document.querySelector('.tab-btn[data-tab="checker"]');
+  const checkerTab = document.getElementById('checker');
+  if (!checkerBtn) return;
+
+  const email = (user && user.email) ? user.email.toLowerCase() : '';
+  const allowed = email.endsWith('@refruit.com');
+
+  if (allowed) {
+    checkerBtn.style.display = '';
+  } else {
+    checkerBtn.style.display = 'none';
+    // If checker tab is currently active, switch to feedback
+    if (checkerTab && checkerTab.classList.contains('active')) {
+      checkerBtn.classList.remove('active');
+      checkerTab.classList.remove('active');
+      const fallbackBtn = document.querySelector('.tab-btn[data-tab="feedback"]');
+      const fallbackTab = document.getElementById('feedback');
+      if (fallbackBtn && fallbackTab) {
+        fallbackBtn.classList.add('active');
+        fallbackTab.classList.add('active');
+        loadFeedbackList();
+      }
+    }
+  }
+}
+
 function updateWpUI(user, url) {
   const loggedOutUi = document.getElementById('wp-logged-out-ui');
   const loggedInUi = document.getElementById('wp-logged-in-ui');
@@ -1585,6 +1622,7 @@ function updateWpUI(user, url) {
     loggedInUi.style.display = 'none';
   }
   updateBugSubmitterDisplay();
+  updateQcTabAccess(user);
 }
 
 async function checkWpAuth(url, token) {

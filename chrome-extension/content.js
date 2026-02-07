@@ -1,6 +1,9 @@
 // The QC tool has moved to the Chrome Side Panel.
 // Click the extension icon to open it.
 
+if (window.__qcContentScriptLoaded) { /* already injected, skip */ } else {
+window.__qcContentScriptLoaded = true;
+
 let highlightOverlay = null;
 
 const US_TO_UK = {
@@ -2386,3 +2389,4 @@ function disableMobileView() {
   console.log('Mobile View disabled');
 }
 
+} // end guard: __qcContentScriptLoaded

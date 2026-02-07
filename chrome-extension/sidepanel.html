@@ -289,10 +289,10 @@
 </head>
 <body>
   <div class="tabs-header">
-    <button class="tab-btn active" data-tab="checker" title="Checker">
+    <button class="tab-btn" data-tab="checker" title="Checker" style="display: none;">
       <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
     </button>
-    <button class="tab-btn" data-tab="feedback" title="Feedback">
+    <button class="tab-btn active" data-tab="feedback" title="Feedback">
       <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
     </button>
     <button class="tab-btn" data-tab="bugs" title="Bug Reports">
@@ -314,7 +314,7 @@
 
   <div class="tab-container">
     <!-- Checker Tab -->
-    <div id="checker" class="tab-content active" style="overflow-y: auto;">
+    <div id="checker" class="tab-content" style="overflow-y: auto;">
       <h2 style="margin-bottom: 16px; color: #2c3e50; text-align: center; font-size: 18px;">QC Tools</h2>
       
       <div style="background: #ffffff; border-radius: 4px; border: 1px solid #dee2e6; margin-bottom: 8px; flex-shrink: 0; overflow: hidden;">
@@ -472,7 +472,7 @@
     </div>
 
     <!-- Feedback Tab -->
-    <div id="feedback" class="tab-content">
+    <div id="feedback" class="tab-content active">
       <h2 style="margin-bottom: 12px; color: #2c3e50; flex-shrink: 0; text-align: center;">Notes & Feedback</h2>
       
       <div style="margin-bottom: 12px; display: flex; gap: 8px; flex-shrink: 0;">

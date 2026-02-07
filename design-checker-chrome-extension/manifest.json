@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "Tiny Inspector",
+  "version": "1.0.0",
+  "description": "A QC tool to check website elements including headers, fonts, images, spacing, and meta tags",
+  "permissions": ["activeTab", "scripting", "sidePanel", "downloads"],
+  "action": {
+    "default_title": "Click to open Tiny Inspector"
+  },
+  "side_panel": {
+    "default_path": "sidepanel/sidepanel.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content/content.js"],
+      "css": ["content/content.css"]
+    }
+  ]
+}
