@@ -3,7 +3,7 @@
   "name": "Tiny Inspector",
   "version": "1.0.0",
   "description": "A QC tool to check website elements including headers, fonts, images, spacing, and meta tags",
-  "permissions": ["activeTab", "scripting", "sidePanel", "downloads"],
+  "permissions": ["activeTab", "scripting", "sidePanel", "downloads", "windows"],
   "action": {
     "default_title": "Click to open Tiny Inspector"
   },

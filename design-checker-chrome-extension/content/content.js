@@ -57,6 +57,13 @@
       } else {
         sendResponse({ success: false, error: 'No target' });
       }
+    } else if (request.action === 'getViewportInfo') {
+      sendResponse({
+        viewport: {
+          width: window.innerWidth,
+          height: window.innerHeight
+        }
+      });
     } else if (request.action === 'resetStyles') {
       if (inspectTarget) {
         inspectTarget.removeAttribute('style');

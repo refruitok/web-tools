@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oxygen CSS Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link id="google-fonts" rel="stylesheet">
+</head>
+<body class="bg-zinc-950 text-zinc-100 min-h-screen">
+
+    <!-- Settings Modal (API Key) -->
+    <div id="settings-modal" class="fixed inset-0 bg-black/70 z-50 hidden items-center justify-center backdrop-blur-sm">
+        <div class="bg-zinc-900 border border-zinc-700 rounded-2xl shadow-2xl p-8 w-full max-w-md mx-4">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-lg font-bold text-zinc-100">Settings</h2>
+                <button id="close-settings" class="text-zinc-500 hover:text-zinc-300 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold mb-2 text-zinc-300">OpenAI API Key</label>
+                    <input type="password" id="api-key-input" placeholder="sk-..." class="w-full bg-zinc-800 border border-zinc-700 text-zinc-100 rounded-lg px-3 py-2.5 text-sm font-mono focus:ring-2 focus:ring-indigo-500 outline-none placeholder-zinc-600">
+                    <p class="text-xs text-zinc-500 mt-1.5">Stored locally in your browser. Never sent to any server except OpenAI.</p>
+                </div>
+                <button id="save-api-key" class="w-full bg-indigo-600 text-white font-semibold py-2.5 rounded-lg hover:bg-indigo-500 transition-colors">Save Key</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-[1440px] mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Input Panel -->
+        <aside class="lg:col-span-4 bg-zinc-900 rounded-2xl border border-zinc-800 p-6 h-fit sticky top-6">
+            <header class="mb-8 flex items-center justify-between">
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight text-zinc-100">Oxygen CSS Gen</h1>
+                    <p class="text-zinc-500 text-sm mt-1">AI-optimized design libraries.</p>
+                </div>
+                <button id="open-settings" class="p-2 rounded-lg hover:bg-zinc-800 transition-colors text-zinc-500 hover:text-zinc-300" title="Settings">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+            </header>
+
+            <section class="space-y-5">
+                <!-- Vibe Selector -->
+                <div>
+                    <label class="block text-xs font-semibold mb-1.5 text-zinc-400 uppercase tracking-wider">Design Vibe</label>
+                    <select id="vibe-selector" class="w-full bg-zinc-800 border border-zinc-700 text-zinc-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 transition-all outline-none">
+                        <option value="professional">Professional / Corporate</option>
+                        <option value="minimal">Minimal / Clean</option>
+                        <option value="playful">Playful / Vibrant</option>
+                        <option value="brutalist">Brutalist / Bold</option>
+                    </select>
+                </div>
+
+                <!-- Font Selection -->
+                <div>
+                    <label class="block text-xs font-semibold mb-1.5 text-zinc-400 uppercase tracking-wider">Heading Font</label>
+                    <select id="heading-font" class="w-full bg-zinc-800 border border-zinc-700 text-zinc-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 transition-all outline-none mb-3">
+                        <option value="">— Select or let AI choose —</option>
+                    </select>
+                    <label class="block text-xs font-semibold mb-1.5 text-zinc-400 uppercase tracking-wider">Body Font</label>
+                    <select id="body-font" class="w-full bg-zinc-800 border border-zinc-700 text-zinc-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 transition-all outline-none">
+                        <option value="">— Select or let AI choose —</option>
+                    </select>
+                </div>
+
+                <!-- Color Selection -->
+                <div>
+                    <label class="block text-xs font-semibold mb-1.5 text-zinc-400 uppercase tracking-wider">Primary Brand Color</label>
+                    <div class="flex gap-3 mb-3">
+                        <input type="color" id="brand-color" value="#6366f1" class="h-10 w-16 rounded-lg border border-zinc-700 cursor-pointer bg-zinc-800">
+                        <input type="text" id="brand-color-hex" value="#6366f1" class="flex-1 bg-zinc-800 border border-zinc-700 text-zinc-200 rounded-lg px-3 py-2 text-sm font-mono">
+                    </div>
+                    <div id="secondary-color-section" class="hidden">
+                        <label class="block text-xs font-semibold mb-1.5 text-zinc-400 uppercase tracking-wider">Secondary Color</label>
+                        <div class="flex gap-3">
+                            <input type="color" id="secondary-color" value="#f59e0b" class="h-10 w-16 rounded-lg border border-zinc-700 cursor-pointer bg-zinc-800">
+                            <input type="text" id="secondary-color-hex" value="#f59e0b" class="flex-1 bg-zinc-800 border border-zinc-700 text-zinc-200 rounded-lg px-3 py-2 text-sm font-mono">
+                            <button id="remove-secondary" class="text-zinc-500 hover:text-red-400 transition-colors px-2" title="Remove">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <button id="add-secondary-btn" class="mt-2 text-sm text-indigo-400 hover:text-indigo-300 font-medium transition-colors">+ Add secondary color</button>
+                </div>
+
+                <!-- AI Intelligence Note -->
+                <div class="bg-indigo-950/50 border border-indigo-900/50 rounded-lg p-4">
+                    <h3 class="text-indigo-300 text-sm font-bold flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                        AI Insights
+                    </h3>
+                    <p id="ai-insight-text" class="text-indigo-300/70 text-xs mt-1 leading-relaxed">
+                        Adjusting typography scale and color shades based on your "Professional" vibe.
+                    </p>
+                </div>
+
+                <div class="flex gap-3">
+                    <button id="generate-btn" class="flex-1 bg-zinc-100 text-zinc-900 font-semibold py-3 rounded-lg hover:bg-white transition-colors">
+                        Apply Design System
+                    </button>
+                    <button id="ai-suggest-btn" class="px-4 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-500 transition-colors" title="AI fills missing parameters">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                    </button>
+                </div>
+            </section>
+        </aside>
+
+        <!-- Preview Section -->
+        <main class="lg:col-span-8 space-y-4">
+            <!-- Header/Actions -->
+            <div class="flex items-center justify-between bg-zinc-900 border border-zinc-800 p-3 rounded-xl">
+                <!-- Preview Tabs -->
+                <div class="flex gap-1 bg-zinc-800 rounded-lg p-1">
+                    <button id="tab-components" class="preview-tab active px-4 py-1.5 text-sm font-medium rounded-md transition-colors">Components</button>
+                    <button id="tab-page" class="preview-tab px-4 py-1.5 text-sm font-medium rounded-md transition-colors">Page Context</button>
+                    <button id="tab-css" class="preview-tab px-4 py-1.5 text-sm font-medium rounded-md transition-colors">CSS Code</button>
+                    <button id="tab-integration" class="preview-tab px-4 py-1.5 text-sm font-medium rounded-md transition-colors">Oxygen</button>
+                </div>
+                <div class="flex gap-2">
+                    <button id="copy-css" class="px-3 py-1.5 text-sm font-medium border border-zinc-700 text-zinc-300 rounded-lg hover:bg-zinc-800 transition-colors">Copy</button>
+                    <button id="download-css" class="px-3 py-1.5 text-sm font-medium bg-zinc-100 text-zinc-900 rounded-lg hover:bg-white transition-colors">Download</button>
+                </div>
+            </div>
+
+            <!-- Tab: Components Preview -->
+            <div id="panel-components" class="preview-panel bg-white rounded-2xl border border-zinc-200 overflow-hidden">
+                <div class="p-8 space-y-12">
+
+                    <!-- Typography -->
+                    <section>
+                        <h3 class="section-label">Typography</h3>
+                        <div class="space-y-3">
+                            <h1 class="preview-h1">H1: The Future of Design</h1>
+                            <h2 class="preview-h2">H2: Building better websites</h2>
+                            <h3 class="preview-h3">H3: Small details matter</h3>
+                            <h4 class="preview-h4">H4: Consistent token systems</h4>
+                            <h5 class="preview-h5">H5: Utility-first approach</h5>
+                            <h6 class="preview-h6">H6: Fine print &amp; labels</h6>
+                            <p class="preview-p">This is a paragraph showing how your body text will look. Oxygen Builder will use these variables to maintain consistency across your entire project. Good typography creates a visual hierarchy that guides the reader.</p>
+                        </div>
+                    </section>
+
+                    <!-- Color Scale -->
+                    <section>
+                        <h3 class="section-label">Primary Color Spectrum</h3>
+                        <div id="color-spectrum-preview" class="grid grid-cols-5 md:grid-cols-9 gap-2"></div>
+                        <div id="secondary-spectrum-section" class="hidden mt-4">
+                            <h3 class="section-label">Secondary Color Spectrum</h3>
+                            <div id="secondary-spectrum-preview" class="grid grid-cols-5 md:grid-cols-9 gap-2"></div>
+                        </div>
+                    </section>
+
+                    <!-- Lists -->
+                    <section>
+                        <h3 class="section-label">Lists</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                                <h4 class="preview-h5 mb-3">Ordered List</h4>
+                                <ol class="preview-ol">
+                                    <li>First item in the ordered list</li>
+                                    <li>Second item with more detail
+                                        <ol><li>Nested sub-item A</li><li>Nested sub-item B</li></ol>
+                                    </li>
+                                    <li>Third item to complete the set</li>
+                                </ol>
+                            </div>
+                            <div>
+                                <h4 class="preview-h5 mb-3">Unordered List</h4>
+                                <ul class="preview-ul">
+                                    <li>Design tokens for consistency</li>
+                                    <li>Responsive typography scale
+                                        <ul><li>Mobile-first approach</li><li>Fluid type sizing</li></ul>
+                                    </li>
+                                    <li>Oxygen Builder integration</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Buttons -->
+                    <section>
+                        <h3 class="section-label">Buttons</h3>
+                        <div class="flex flex-wrap gap-3 items-center">
+                            <button class="preview-btn-primary">Primary Button</button>
+                            <button class="preview-btn-secondary">Secondary</button>
+                            <button class="preview-btn-outline">Outline</button>
+                            <button class="preview-btn-ghost">Ghost</button>
+                            <button class="preview-btn-primary preview-btn-sm">Small</button>
+                            <button class="preview-btn-primary preview-btn-lg">Large</button>
+                        </div>
+                    </section>
+
+                    <!-- Navigation -->
+                    <section>
+                        <h3 class="section-label">Navigation</h3>
+                        <nav class="preview-nav">
+                            <a href="#" class="preview-nav-brand">Brand</a>
+                            <div class="preview-nav-links">
+                                <a href="#">Home</a>
+                                <a href="#">About</a>
+                                <a href="#">Services</a>
+                                <a href="#">Portfolio</a>
+                                <a href="#" class="preview-nav-cta">Contact</a>
+                            </div>
+                        </nav>
+                    </section>
+
+                    <!-- Cards -->
+                    <section>
+                        <h3 class="section-label">Cards</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="preview-card">
+                                <h4 class="preview-h4 mb-2">Design Token Integration</h4>
+                                <p class="preview-p text-sm">Variables are automatically mapped to Oxygen's semantic structure for seamless reuse.</p>
+                            </div>
+                            <div class="preview-card">
+                                <h4 class="preview-h4 mb-2">AI-Powered Decisions</h4>
+                                <p class="preview-p text-sm">Type scale, color steps, and spacing are intelligently selected based on your design vibe.</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Tab: Page Context Preview -->
+            <div id="panel-page" class="preview-panel hidden bg-white rounded-2xl border border-zinc-200 overflow-hidden">
+                <div class="page-context">
+                    <!-- Hero -->
+                    <nav class="preview-nav" style="border-radius:0; border-left:0; border-right:0; border-top:0;">
+                        <a href="#" class="preview-nav-brand">Acme Studio</a>
+                        <div class="preview-nav-links">
+                            <a href="#">Work</a>
+                            <a href="#">About</a>
+                            <a href="#">Blog</a>
+                            <a href="#" class="preview-nav-cta">Get in Touch</a>
+                        </div>
+                    </nav>
+
+                    <div class="page-hero">
+                        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&h=500&fit=crop" alt="Hero" class="page-hero-img">
+                        <div class="page-hero-overlay">
+                            <h1 class="preview-h1" style="color:#fff">We Build Digital Experiences That Matter</h1>
+                            <p class="preview-p" style="color:rgba(255,255,255,0.85); max-width:40rem">Strategy, design, and technology — combined to create products people love. Our approach is rooted in research and refined through iteration.</p>
+                            <div style="display:flex; gap:0.75rem; flex-wrap:wrap">
+                                <button class="preview-btn-primary">View Our Work</button>
+                                <button class="preview-btn-outline" style="color:#fff; border-color:rgba(255,255,255,0.4)">Learn More</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Content Section -->
+                    <article class="page-article">
+                        <h2 class="preview-h2">Designing for Clarity</h2>
+                        <p class="preview-p">Great design is invisible. It guides users effortlessly through content, creating a seamless experience that feels natural. Every spacing decision, every font pairing, and every color choice contributes to this invisible architecture.</p>
+
+                        <figure class="page-figure">
+                            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=400&fit=crop" alt="Design process" class="page-figure-img">
+                            <figcaption class="preview-p" style="font-size:0.8rem; opacity:0.6; margin-top:0.5rem">Our design process combines research, prototyping, and user testing.</figcaption>
+                        </figure>
+
+                        <h3 class="preview-h3">The Role of Typography</h3>
+                        <p class="preview-p">Typography is the backbone of any design system. The right type scale creates a clear hierarchy that helps readers scan and absorb information quickly. We use mathematical ratios to ensure consistency across all screen sizes.</p>
+
+                        <h4 class="preview-h4">Key Principles</h4>
+                        <ul class="preview-ul">
+                            <li>Establish a clear visual hierarchy with consistent heading sizes</li>
+                            <li>Use adequate line height for comfortable reading (1.5–1.8 for body text)</li>
+                            <li>Maintain optimal line length (50–75 characters per line)</li>
+                            <li>Choose font pairings that complement each other</li>
+                        </ul>
+
+                        <blockquote class="page-blockquote">
+                            <p class="preview-p">"Good typography is invisible. Bad typography is everywhere."</p>
+                        </blockquote>
+
+                        <h3 class="preview-h3">Color &amp; Spacing</h3>
+                        <p class="preview-p">A well-defined color palette and spacing system are the foundation of visual consistency. AI-driven adjustments ensure that padding and margins adapt to your chosen fonts for optimal legibility.</p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" style="margin-top:var(--content-margin-block)">
+                            <div class="preview-card">
+                                <img src="https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=400&h=200&fit=crop" alt="Color theory" style="width:100%; border-radius:var(--radius-base); margin-bottom:1rem">
+                                <h5 class="preview-h5">Color Theory in Practice</h5>
+                                <p class="preview-p text-sm">Understanding how colors interact helps create harmonious palettes that reinforce your brand identity.</p>
+                            </div>
+                            <div class="preview-card">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=200&fit=crop" alt="Spacing systems" style="width:100%; border-radius:var(--radius-base); margin-bottom:1rem">
+                                <h5 class="preview-h5">Systematic Spacing</h5>
+                                <p class="preview-p text-sm">Consistent spacing creates rhythm and helps users navigate content without cognitive overload.</p>
+                            </div>
+                        </div>
+
+                        <h4 class="preview-h4">Implementation Steps</h4>
+                        <ol class="preview-ol">
+                            <li>Define your base font size and scale ratio</li>
+                            <li>Generate a color palette from your brand color</li>
+                            <li>Set up spacing tokens based on your type scale</li>
+                            <li>Apply semantic naming for easy Oxygen Builder integration</li>
+                            <li>Test across devices and adjust as needed</li>
+                        </ol>
+                    </article>
+
+                    <!-- Footer -->
+                    <footer class="page-footer">
+                        <p class="preview-p" style="font-size:0.8rem; opacity:0.6; text-align:center">&copy; 2026 Acme Studio. Built with Oxygen CSS Generator.</p>
+                    </footer>
+                </div>
+            </div>
+
+            <!-- Tab: CSS Code -->
+            <div id="panel-css" class="preview-panel hidden">
+                <pre class="bg-zinc-900 border border-zinc-800 text-indigo-300 p-6 rounded-2xl overflow-x-auto text-sm font-mono leading-relaxed"><code id="css-output"></code></pre>
+            </div>
+
+            <!-- Tab: Oxygen Integration -->
+            <div id="panel-integration" class="preview-panel hidden">
+                <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 space-y-8">
+                    <div>
+                        <h2 class="text-xl font-bold text-zinc-100 mb-2">Oxygen Builder Integration</h2>
+                        <p class="text-zinc-400 text-sm leading-relaxed">There are 3 ways to add this generated CSS into Oxygen Builder so that all elements respect your design tokens. Choose the method that fits your workflow.</p>
+                    </div>
+
+                    <!-- Method 1: Global Stylesheet -->
+                    <div class="bg-zinc-800/50 border border-zinc-700/50 rounded-xl p-6 space-y-4">
+                        <div class="flex items-start gap-3">
+                            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-indigo-600 text-white text-sm font-bold flex items-center justify-center">1</span>
+                            <div>
+                                <h3 class="text-base font-bold text-zinc-100">Global Stylesheet (Recommended)</h3>
+                                <p class="text-zinc-400 text-sm mt-1">Loads on every page. Best for site-wide design tokens.</p>
+                            </div>
+                        </div>
+                        <ol class="text-sm text-zinc-300 space-y-2 ml-10 list-decimal">
+                            <li>In WordPress admin, go to <strong class="text-zinc-100">Oxygen &gt; Stylesheets</strong></li>
+                            <li>Click <strong class="text-zinc-100">Add Stylesheet</strong> and name it <code class="bg-zinc-700 px-1.5 py-0.5 rounded text-indigo-300 text-xs">Design System Tokens</code></li>
+                            <li>Paste the CSS below into the editor</li>
+                            <li>Click <strong class="text-zinc-100">Save</strong></li>
+                        </ol>
+                        <p class="text-xs text-zinc-500 ml-10">The CSS is stored in <code class="bg-zinc-700 px-1 py-0.5 rounded text-zinc-400">wp-content/uploads/oxygen/css/universal.css</code> and loaded globally.</p>
+                        <div class="ml-10">
+                            <button id="copy-for-oxygen-stylesheet" class="px-4 py-2 text-sm font-semibold bg-indigo-600 text-white rounded-lg hover:bg-indigo-500 transition-colors">Copy CSS for Stylesheet</button>
+                        </div>
+                    </div>
+
+                    <!-- Method 2: Code Block -->
+                    <div class="bg-zinc-800/50 border border-zinc-700/50 rounded-xl p-6 space-y-4">
+                        <div class="flex items-start gap-3">
+                            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-zinc-600 text-white text-sm font-bold flex items-center justify-center">2</span>
+                            <div>
+                                <h3 class="text-base font-bold text-zinc-100">Code Block in a Template</h3>
+                                <p class="text-zinc-400 text-sm mt-1">Scoped to a template and its child pages. Good for multi-brand sites.</p>
+                            </div>
+                        </div>
+                        <ol class="text-sm text-zinc-300 space-y-2 ml-10 list-decimal">
+                            <li>Open your <strong class="text-zinc-100">catch-all template</strong> (or any template) in Oxygen's Visual Editor</li>
+                            <li>Add element: <strong class="text-zinc-100">+Add &gt; Basic &gt; Code Block</strong></li>
+                            <li>Select the <strong class="text-zinc-100">CSS</strong> tab in the Code Block properties</li>
+                            <li>Paste the CSS and save the template</li>
+                        </ol>
+                        <p class="text-xs text-zinc-500 ml-10">Every page inheriting this template will use the design tokens. The Code Block position on the page doesn't matter for CSS.</p>
+                        <div class="ml-10">
+                            <button id="copy-for-oxygen-codeblock" class="px-4 py-2 text-sm font-semibold border border-zinc-600 text-zinc-300 rounded-lg hover:bg-zinc-700 transition-colors">Copy CSS for Code Block</button>
+                        </div>
+                    </div>
+
+                    <!-- Method 3: WP Customizer -->
+                    <div class="bg-zinc-800/50 border border-zinc-700/50 rounded-xl p-6 space-y-4">
+                        <div class="flex items-start gap-3">
+                            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-zinc-600 text-white text-sm font-bold flex items-center justify-center">3</span>
+                            <div>
+                                <h3 class="text-base font-bold text-zinc-100">WordPress Customizer (Fallback)</h3>
+                                <p class="text-zinc-400 text-sm mt-1">Quick option if you don't want to open Oxygen at all.</p>
+                            </div>
+                        </div>
+                        <ol class="text-sm text-zinc-300 space-y-2 ml-10 list-decimal">
+                            <li>Go to <strong class="text-zinc-100">Appearance &gt; Customize &gt; Additional CSS</strong></li>
+                            <li>Paste the CSS and click <strong class="text-zinc-100">Publish</strong></li>
+                        </ol>
+                        <p class="text-xs text-zinc-500 ml-10">Injected in a <code class="bg-zinc-700 px-1 py-0.5 rounded text-zinc-400">&lt;style&gt;</code> tag before <code class="bg-zinc-700 px-1 py-0.5 rounded text-zinc-400">&lt;/head&gt;</code>. Site-wide but lower specificity than Oxygen stylesheets.</p>
+                    </div>
+
+                    <!-- Google Fonts Note -->
+                    <div class="bg-amber-950/30 border border-amber-800/40 rounded-xl p-6 space-y-3">
+                        <h3 class="text-amber-300 text-sm font-bold flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                            Don't forget Google Fonts
+                        </h3>
+                        <p class="text-amber-200/70 text-sm leading-relaxed">The CSS uses Google Fonts that must be loaded on your site. Add this to your Oxygen template's <strong class="text-amber-200">Code Block &gt; Header</strong>, or use a plugin like <strong class="text-amber-200">OMGF</strong> to self-host them.</p>
+                        <pre id="google-fonts-snippet" class="bg-zinc-900 border border-zinc-700 text-amber-300/80 p-3 rounded-lg text-xs font-mono overflow-x-auto"></pre>
+                        <button id="copy-google-fonts" class="px-4 py-2 text-sm font-semibold border border-amber-700/50 text-amber-300 rounded-lg hover:bg-amber-900/30 transition-colors">Copy Font Link</button>
+                    </div>
+
+                    <!-- Using Variables in Oxygen -->
+                    <div class="bg-zinc-800/50 border border-zinc-700/50 rounded-xl p-6 space-y-3">
+                        <h3 class="text-base font-bold text-zinc-100">Using Variables in Oxygen</h3>
+                        <p class="text-zinc-400 text-sm leading-relaxed">Once the CSS is loaded, reference the variables anywhere in Oxygen's visual controls:</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                            <div class="bg-zinc-900 rounded-lg p-3">
+                                <p class="text-zinc-500 text-xs mb-1">Font Family</p>
+                                <code class="text-indigo-300">var(--font-heading)</code>
+                            </div>
+                            <div class="bg-zinc-900 rounded-lg p-3">
+                                <p class="text-zinc-500 text-xs mb-1">Font Size (e.g. H2)</p>
+                                <code class="text-indigo-300">var(--step-4)</code>
+                            </div>
+                            <div class="bg-zinc-900 rounded-lg p-3">
+                                <p class="text-zinc-500 text-xs mb-1">Brand Color</p>
+                                <code class="text-indigo-300">var(--color-brand)</code>
+                            </div>
+                            <div class="bg-zinc-900 rounded-lg p-3">
+                                <p class="text-zinc-500 text-xs mb-1">Spacing</p>
+                                <code class="text-indigo-300">var(--spacing-base)</code>
+                            </div>
+                            <div class="bg-zinc-900 rounded-lg p-3">
+                                <p class="text-zinc-500 text-xs mb-1">Border Radius</p>
+                                <code class="text-indigo-300">var(--radius-base)</code>
+                            </div>
+                            <div class="bg-zinc-900 rounded-lg p-3">
+                                <p class="text-zinc-500 text-xs mb-1">Heading Margin</p>
+                                <code class="text-indigo-300">var(--heading-margin-top)</code>
+                            </div>
+                        </div>
+                        <p class="text-zinc-500 text-xs mt-2">In Oxygen's element settings, type <code class="bg-zinc-700 px-1 py-0.5 rounded text-zinc-400">var(--variable-name)</code> in any field that accepts CSS values (font size, color, padding, margin, etc).</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "SEO Audit Assistant",
+  "version": "1.0",
+  "description": "An SEO audit tool for websites with a convenient side panel.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "sidePanel",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://api.deepseek.com/*",
+    "https://api.openai.com/*",
+    "http://*/*",
+    "https://*/*"
+  ],
+  "action": {
+    "default_title": "Open SEO Panel"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["drawer.html", "html2canvas.min.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

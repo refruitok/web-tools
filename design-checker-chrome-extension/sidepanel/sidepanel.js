@@ -4,6 +4,8 @@ let panelLocked = false;
 
 // UI Elements
 let inspectBtn, distanceBtn, activeInfo, modeStatus, cancelBtn, dynamicContent, metaDetails, clearHighlightsBtn, breadcrumbsContainer, breadcrumbsList;
+let viewportSizeEl, bootstrapBadgeEl, originalWindowSize = null;
+let viewportPollInterval = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize UI elements
@@ -65,6 +67,37 @@ document.addEventListener('DOMContentLoaded', () => {
       }).catch(err => console.warn('getActiveTab in onUpdated failed:', err));
     }
   });
+
+  // Viewport section
+  viewportSizeEl = document.getElementById('viewportSize');
+  bootstrapBadgeEl = document.getElementById('bootstrapBadge');
+
+  // Preset resize buttons
+  document.querySelectorAll('.preset-btn[data-width]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const w = parseInt(btn.dataset.width);
+      const h = parseInt(btn.dataset.height);
+      resizeToPreset(w, h);
+    });
+  });
+
+  const resetViewportBtn = document.getElementById('resetViewportBtn');
+  if (resetViewportBtn) {
+    resetViewportBtn.addEventListener('click', () => {
+      if (originalWindowSize) {
+        chrome.runtime.sendMessage({
+          action: 'resizeWindow',
+          width: originalWindowSize.width,
+          height: originalWindowSize.height
+        }).catch(err => console.warn('resizeWindow failed:', err));
+        originalWindowSize = null;
+      }
+    });
+  }
+
+  // Start polling viewport size
+  updateViewportInfo();
+  viewportPollInterval = setInterval(updateViewportInfo, 1000);
 
   loadMetaInfo();
 
@@ -750,6 +783,80 @@ function displayDistanceDetails(data) {
   attachAccordionListeners();
   attachDownloadListeners();
   attachEditListeners();
+}
+
+async function updateViewportInfo() {
+  const tab = await getActiveTab();
+  if (!tab) return;
+
+  try {
+    const response = await chrome.tabs.sendMessage(tab.id, { action: 'getViewportInfo' });
+    if (response && response.viewport) {
+      const { width, height } = response.viewport;
+      if (viewportSizeEl) viewportSizeEl.textContent = `${width} × ${height}`;
+      
+      const bp = getBootstrapBreakpoint(width);
+      if (bootstrapBadgeEl) {
+        bootstrapBadgeEl.textContent = bp.label;
+        bootstrapBadgeEl.className = `bootstrap-badge bp-${bp.key}`;
+      }
+
+      // Highlight active preset button
+      document.querySelectorAll('.preset-btn[data-width]').forEach(btn => {
+        const pw = parseInt(btn.dataset.width);
+        btn.classList.toggle('active', pw === width);
+      });
+    }
+  } catch (e) {
+    // Content script not ready yet
+  }
+}
+
+function getBootstrapBreakpoint(width) {
+  if (width < 576) return { key: 'xs', label: 'XS (<576)' };
+  if (width < 768) return { key: 'sm', label: 'SM (≥576)' };
+  if (width < 992) return { key: 'md', label: 'MD (≥768)' };
+  if (width < 1200) return { key: 'lg', label: 'LG (≥992)' };
+  if (width < 1400) return { key: 'xl', label: 'XL (≥1200)' };
+  return { key: 'xxl', label: 'XXL (≥1400)' };
+}
+
+async function resizeToPreset(targetWidth, targetHeight) {
+  const tab = await getActiveTab();
+  if (!tab) return;
+
+  // Save original size before first resize
+  if (!originalWindowSize) {
+    const win = await chrome.windows.getCurrent();
+    originalWindowSize = { width: win.width, height: win.height };
+  }
+
+  // We need to account for the browser chrome (toolbars, etc.)
+  // Get current viewport vs window size to calculate the chrome offset
+  try {
+    const response = await chrome.tabs.sendMessage(tab.id, { action: 'getViewportInfo' });
+    if (response && response.viewport) {
+      const win = await chrome.windows.getCurrent();
+      const chromeWidth = win.width - response.viewport.width;
+      const chromeHeight = win.height - response.viewport.height;
+
+      chrome.runtime.sendMessage({
+        action: 'resizeWindow',
+        width: targetWidth + chromeWidth,
+        height: targetHeight + chromeHeight
+      }).catch(err => console.warn('resizeWindow failed:', err));
+
+      // Update display after a short delay
+      setTimeout(updateViewportInfo, 300);
+    }
+  } catch (e) {
+    // Fallback: just resize without offset compensation
+    chrome.runtime.sendMessage({
+      action: 'resizeWindow',
+      width: targetWidth,
+      height: targetHeight
+    }).catch(err => console.warn('resizeWindow failed:', err));
+  }
 }
 
 async function loadMetaInfo() {

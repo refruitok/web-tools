@@ -6,6 +6,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'openSidePanel') {
     chrome.sidePanel.open({ tabId: sender.tab.id });
     sendResponse({ success: true });
+  } else if (message.action === 'resizeWindow') {
+    chrome.windows.getCurrent((win) => {
+      chrome.windows.update(win.id, {
+        width: message.width,
+        height: message.height
+      });
+    });
+    sendResponse({ success: true });
   } else if (message.action === 'downloadImage') {
     chrome.downloads.download({
       url: message.url,

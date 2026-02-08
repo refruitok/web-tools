@@ -29,6 +29,46 @@
       <button id="cancelBtn" class="btn-small">Cancel</button>
     </div>
 
+    <div id="viewportSection" class="viewport-section">
+      <div class="viewport-header">
+        <span class="viewport-icon">📐</span>
+        <span class="viewport-title">Browser Size</span>
+        <span id="viewportSize" class="viewport-size">-- × --</span>
+        <span id="bootstrapBadge" class="bootstrap-badge">--</span>
+      </div>
+      <div class="viewport-presets">
+        <button class="preset-btn" data-width="375" data-height="667" title="iPhone SE">
+          <span class="preset-icon">📱</span>
+          <span class="preset-label">Mobile S</span>
+          <span class="preset-dim">375×667</span>
+        </button>
+        <button class="preset-btn" data-width="390" data-height="844" title="iPhone 14">
+          <span class="preset-icon">📱</span>
+          <span class="preset-label">Mobile M</span>
+          <span class="preset-dim">390×844</span>
+        </button>
+        <button class="preset-btn" data-width="768" data-height="1024" title="iPad">
+          <span class="preset-icon">📋</span>
+          <span class="preset-label">Tablet</span>
+          <span class="preset-dim">768×1024</span>
+        </button>
+        <button class="preset-btn" data-width="1024" data-height="768" title="iPad Landscape">
+          <span class="preset-icon">💻</span>
+          <span class="preset-label">Laptop</span>
+          <span class="preset-dim">1024×768</span>
+        </button>
+        <button class="preset-btn" data-width="1440" data-height="900" title="Desktop">
+          <span class="preset-icon">🖥️</span>
+          <span class="preset-label">Desktop</span>
+          <span class="preset-dim">1440×900</span>
+        </button>
+        <button class="preset-btn preset-reset" id="resetViewportBtn" title="Reset to original size">
+          <span class="preset-icon">↩️</span>
+          <span class="preset-label">Reset</span>
+        </button>
+      </div>
+    </div>
+
     <div id="inspectorResults" class="inspector-results">
       <div class="meta-section">
         <details id="acc_meta" class="accordion-trigger">
